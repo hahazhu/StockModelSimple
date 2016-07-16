@@ -38,7 +38,7 @@ public class SinaStockCodeJob implements Runnable {
 		URL url;
 		try {
 			url = new URL(
-					"http://vip.com.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/qgqp/index.phtml?s_i=&s_a=&s_c=&s_t=&s_z=&p="
+					"http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/qgqp/index.phtml?s_i=&s_a=&s_c=&s_t=&s_z=&p="
 							+ i);
 			String code = getBatchStackCodes(url);
 			if (code.contains("sh") || code.contains("sz")) {
@@ -46,7 +46,7 @@ public class SinaStockCodeJob implements Runnable {
 			} else {
 			}
 			url = new URL(
-					"http://vip.com.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/qgqp/index.phtml?s_i=&s_a=&s_c=&s_t=sz_a&s_z=&p="
+					"http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/qgqp/index.phtml?s_i=&s_a=&s_c=&s_t=sz_a&s_z=&p="
 							+ i);
 			code = getBatchStackCodes(url);
 			codes.addAll(handleStockCode(code));

@@ -5,11 +5,7 @@ package com.stock.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.collections.list.TreeList;
@@ -25,14 +21,15 @@ import util.BeanFactory;
 public class DateUtil {
 
 	/**
-	 * @param com.stock
+	 * @param stock
 	 * @param dateBegin
 	 * @param dateEnd
 	 * @return
 	 */
 	private static final JdbcTemplate jdbc  = (JdbcTemplate) BeanFactory.getInstance().getBean("jdbcTemplate");
 	private static final Map dateMap = new ConcurrentHashMap();
-	
+	private static final Map thirtyMap = new ConcurrentHashMap();
+
 	private static final Logger logger = Logger.getLogger("BacktestingFrame");
 	
 	public static void main(String[] args){
@@ -81,6 +78,45 @@ public class DateUtil {
 			return null;
 		}
 		}catch(Exception e){
+			e.printStackTrace();
+			System.err.println(dateBegin+'\t'+dateEnd);
+			return null;
+		}
+	}
+	/**
+	 * @param stock
+	 * @param dateBegin yyyy-mm-dd
+	 * @param dateEnd yyyy-mm-dd
+	 * @return 返回stock上从dateBegin到dateEnd的日期，顺序排列，前后都包含
+	 */
+	@SuppressWarnings("rawtypes")
+	public static List<String> get30KRange(String stock, String dateBegin,
+										String dateEnd) {
+//		logger.info(dateBegin+" "+dateEnd);
+		try{
+			List l = (List) thirtyMap.get(stock);
+			int beg = -1,end = -1;
+			for (int i = 0; i < l.size(); i++) {
+				String s = (String) l.get(i);
+				if(s.startsWith(dateBegin)){
+					beg=i;
+					break;
+				}
+			}
+			for (int i = 0; i < l.size(); i++) {
+				String s = (String) l.get(i);
+				if(s.startsWith(dateEnd)){
+					end=i;
+				}
+			}
+			if(beg==-1||end==-1){
+//				logger.info(dateBegin+":"+dateEnd + " " +stock);
+				return new ArrayList<String>();
+			}
+//			logger.info(l.subList(beg,end+1));
+			return l.subList(beg,end+1);
+		}catch(Exception e){
+			logger.error(e);
 			e.printStackTrace();
 			System.err.println(dateBegin+'\t'+dateEnd);
 			return null;
@@ -161,6 +197,7 @@ public class DateUtil {
 	public static void clear(){
 		dateMap.clear();
 	}
+
 	public static void initDateMap(int i){
 		logger.info("initial date");
 		List<Map<String, Object>> list = jdbc.queryForList("select stock_id,d_date from stock_day "
@@ -184,10 +221,32 @@ public class DateUtil {
 		logger.info("date done");
 		
 	}
+	public static void init30timeMap(int i){
+		logger.info("initial 30k");
+		List<Map<String, Object>> list = jdbc.queryForList("select stock_id,t_time,date_format(t_time,'%Y%m%d') d_date from stock_thirty "
+				+ "where  date_format(t_time,'%Y%m%d') between date_sub(?,interval ? day) and ? order by stock_id,t_time ", new Object[]{
+				Params.dateBegin,i,Params.dateEnd
+		});
+		Iterator it = list.iterator();
+		while(it.hasNext()){
+			Map m = (Map)it.next();
+			String id = (String) m.get("stock_id");
+			List l;
+			if(thirtyMap.containsKey(id)){
+				l = (List) thirtyMap.get(id);
+				l.add(m.get("t_time"));
+			} else {
+				l = new TreeList();
+				l.add(m.get("t_time"));
+			}
+			thirtyMap.put(id, l);
+		}
+		logger.info("30k done");
+	}
 	/**
 	 * @param date
 	 * @param i
-	 * @param stockId 
+	 * @param stock
 	 * @return 该股票date往前追溯i-1天的日期。 20010104，i=3时，返回20010102 
 	 */
 	public static String getBackdate(String date, int i, String stock) {
@@ -198,11 +257,8 @@ public class DateUtil {
 			if(backdate==null)
 				break;
 			j++;
-			
 		}
 		return backdate;
-		
-		
 	}
 
 }

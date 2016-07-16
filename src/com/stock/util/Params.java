@@ -8,12 +8,13 @@ package com.stock.util;
  *
  */
 public class Params {
-	public static String dateBegin = new String("20101101");
+	public static String dateBegin = new String("20160201");
 	public static int capital = 200000;
+
 	public static final int THE_COUNT = 1000;
-	public static final int THE_PERCENT = 33;
-	public static String dateEnd = new String("20140406");
-	public static float profitPer = (float) 1.15;
+	public static final int THE_PERCENT = 20;
+	public static String dateEnd = new String("20160601");
+	public static float profitPer = (float) 1.1;
 	public static float stopLossPer = (float) 0.9;
 	public static float withdrawPercent = (float)0.05;
 	public static int holdPeriod = 9;

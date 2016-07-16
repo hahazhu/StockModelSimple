@@ -36,7 +36,7 @@ public class TrendBuyV3Model implements StockModel {
 	private static Map buyDate= new HashMap();
 
 	/* (non-Javadoc)
-	 * @see com.com.stock.model.StockModel#hasSell()
+	 * @see com.stock.model.StockModel#hasSell()
 	 */
 	@Override
 	public boolean hasSell(float costPrice) {
@@ -68,7 +68,7 @@ public class TrendBuyV3Model implements StockModel {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.com.stock.model.StockModel#setDate(java.lang.String)
+	 * @see com.stock.model.StockModel#setDate(java.lang.String)
 	 */
 	@Override
 	public void setDate(String date) {
@@ -77,7 +77,7 @@ public class TrendBuyV3Model implements StockModel {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.com.stock.model.StockModel#setStock(java.lang.String)
+	 * @see com.stock.model.StockModel#setStock(java.lang.String)
 	 */
 	@Override
 	public void setStock(String stock) {
@@ -87,7 +87,7 @@ public class TrendBuyV3Model implements StockModel {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.com.stock.model.StockModel#hasBuy()
+	 * @see com.stock.model.StockModel#hasBuy()
 	 */
 	@Override
 	public boolean hasBuy() {
@@ -158,12 +158,42 @@ public class TrendBuyV3Model implements StockModel {
 	}
 
 	/* (non-Javadoc)
-	 * @see com.com.stock.model.StockModel#getBackDayCount()
+	 * @see com.stock.model.StockModel#getBackDayCount()
 	 */
 	@Override
 	public int getBackDayCount() {
 		// TODO Auto-generated method stub
 		return N_DAYS+10;
+	}
+
+	@Override
+	public float getBuyPrice() {
+		return 0;
+	}
+
+	@Override
+	public float getSellPrice() {
+		return 0;
+	}
+
+	@Override
+	public String getBuyDate() {
+		return null;
+	}
+
+	@Override
+	public String getSellDate() {
+		return null;
+	}
+
+	@Override
+	public int getHoldPeriod() {
+		return 0;
+	}
+
+	@Override
+	public void setHoldPeriod(int holdPeriod) {
+
 	}
 
 }

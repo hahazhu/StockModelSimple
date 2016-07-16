@@ -25,7 +25,7 @@ public class AllStockJob {
 	Logger logger = Logger.getLogger("AllStockJob");
 	public void execute() {
 		List<String> stockCodeList;
-		logger.info(" all com.stock start!!!!");
+		logger.info(" all stock start!!!!");
 		try {
 			stockCodeList = StockCodeUtil.getStockListFromSina();
 

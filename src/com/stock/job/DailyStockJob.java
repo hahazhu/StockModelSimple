@@ -23,7 +23,7 @@ public class DailyStockJob {
 	Logger logger = Logger.getLogger(this.getClass().getName());
 	public void execute() {
 		List<String> stockCodeList;
-		logger.info("daily com.stock start!!!!!");
+		logger.info("daily stock start!!!!!");
 		try {
 			stockCodeList = StockCodeUtil.getStockListFromSina();
 

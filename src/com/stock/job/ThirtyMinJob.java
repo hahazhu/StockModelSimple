@@ -27,7 +27,7 @@ public class ThirtyMinJob implements Runnable{
 	private static Logger logger = Logger.getLogger("ThirtyMinJob");
 
 	private String stockCode;
-	static String sql = "insert into stock_thirty(stock_id,market,open,high,close,low,volume,chg,percent,turnrate,ma5,ma10,ma20,ema12,ema26,dif,dea,macd,t_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	static String sql = "insert into stock_thirty_tmp(stock_id,market,open,high,close,low,volume,chg,percent,turnrate,ma5,ma10,ma20,ema12,ema26,dif,dea,macd,t_time) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public ThirtyMinJob (String stockCode) {
 		this.stockCode = stockCode;

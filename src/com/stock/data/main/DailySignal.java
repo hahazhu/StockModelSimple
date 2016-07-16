@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import util.BeanFactory;
 
+import com.stock.backtest.BacktestingFrame;
 import com.stock.data.stockprice.StockPriceWareHouse;
 import com.stock.model.StockModel;
 import com.stock.model.TrendBuyV2Model;

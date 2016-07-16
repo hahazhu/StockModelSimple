@@ -32,7 +32,7 @@ public class XueqiuStockPriceJob implements Runnable {
 	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private String stockCode;
-	private static String sql = "insert into stock_day(stock_id,market,volume,open,high,close,low,chg,percent,turnrate,ma5,ma10,ma20,ma30,ema12,ema26,dif,dea,macd,d_date) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static String sql = "insert into stock_day_tmp(stock_id,market,volume,open,high,close,low,chg,percent,turnrate,ma5,ma10,ma20,ma30,ema12,ema26,dif,dea,macd,d_date) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public XueqiuStockPriceJob(String stockCode) {
 		this.stockCode = stockCode;
@@ -54,7 +54,7 @@ public class XueqiuStockPriceJob implements Runnable {
 		URL url;
 		try {
 			url = new URL(
-					"https://www.xueqiu.com/com.stock/forchartk/stocklist.json?period=1day&symbol="
+					"http://www.xueqiu.com/stock/forchartk/stocklist.json?period=1day&symbol="
 							+ stockCode + "&type=before&_=1460389761298");
 
 			int n = 0;
@@ -75,7 +75,7 @@ public class XueqiuStockPriceJob implements Runnable {
 					connection
 							.setRequestProperty(
 									"Cookie",
-									"s=1e8c1213rb; xq_a_token=dd051aaa63d19828d56bd096c8eda6e78824e8b6; xqat=dd051aaa63d19828d56bd096c8eda6e78824e8b6; xq_r_token=60ebbcb634e813d9ef6657901c7b51fd44eb2b11; xq_is_login=1; u=9803841032; xq_token_expire=Fri%20Jun%2010%202016%2019%3A35%3A42%20GMT%2B0800%20(CST); bid=e3e1aafc190e65e60dca5d70b5076471_io9xpiby; snbim_minify=true; Hm_lvt_1db88642e346389874251b5a1eded6e3=1463398425; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1463408315; __utma=1.741705998.1463398616.1463402525.1463402525.6; __utmb=1.3.9.1463750079229; __utmc=1; __utmz=1.1463398616.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)");
+									"s=1e8c1213rb; bid=e3e1aafc190e65e60dca5d70b5076471_io9xpiby; snbim_minify=true; webp=0; xq_a_token=d0ffb1c343ed5691d9fa200a2a26cd4423be68c1; xqat=d0ffb1c343ed5691d9fa200a2a26cd4423be68c1; xq_r_token=a3a5e1a29bab2ecd1d695d6bb58e34597dd15c99; xq_is_login=1; u=9803841032; xq_token_expire=Mon%20Jul%2011%202016%2022%3A37%3A48%20GMT%2B0800%20(CST); __utmt=1; __utma=1.741705998.1463398616.1465111023.1466087899.15; __utmb=1.1.10.1466087899; __utmc=1; __utmz=1.1463398616.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); Hm_lvt_1db88642e346389874251b5a1eded6e3=1466087872; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1466087899");
 					connection.connect();
 					
 					InputStream in = connection.getInputStream();

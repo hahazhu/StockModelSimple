@@ -3,16 +3,23 @@
  */
 package com.stock.backtest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import util.BeanFactory;
 
+import com.stock.data.stockprice.StockPriceWareHouse;
 import com.stock.model.StockModel;
+import com.stock.model.TrendBuyV4Model;
 import com.stock.util.DateUtil;
 import com.stock.util.Params;
 import com.stock.util.PriceUtil;
@@ -64,7 +71,6 @@ public class BacktestingFrame implements Runnable{
 	
 	/**
 	 * 回测模型，需要按日期回测，首先计算当天所有股票是否有出现买卖点，然后从当天出现买点的股票中根据算法选择最优值。
-	 * @param stockModel
 	 */
 	@Override
 	public void run() {
@@ -104,7 +110,9 @@ public class BacktestingFrame implements Runnable{
 					if(stockModel.hasBuy()){
 						String date1 = DateUtil.getNextTradeDay(date,stockId);
 						if(date1!=null){
-							float price1 = PriceUtil.getNextDayPrice(date,stockId);
+//							float price1 = PriceUtil.getNextDayPrice(date,stockId);
+							float price1 = stockModel.getBuyPrice();
+							date1 = stockModel.getBuyDate();
 							float cashToBuy = inventory.getCash()*Params.THE_PERCENT/100;
 							int count =  Math.round(cashToBuy/price1)-Math.round(cashToBuy/price1)%100; 
 							if(count<100){
@@ -136,7 +144,7 @@ public class BacktestingFrame implements Runnable{
 		testParam.put("return", inventory.getTotalVal(dateEnd)/Params.capital);
 		testParam.put("wins", wins);
 		testParam.put("lose", lose);
-		testParam.put("holdPeriod", Params.holdPeriod);
+		testParam.put("holdPeriod", stockModel.getHoldPeriod());
 		testParam.put("winPercent", (float)wins/(wins+lose));
 		BacktestResult.testResult.add(testParam);
 		logger.info("wins"+wins);

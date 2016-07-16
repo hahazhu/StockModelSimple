@@ -5,22 +5,22 @@ import java.util.Arrays;
 
 public class TbUtil {
 	/*
-	 * ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½
+	 * ÓÃÓÚ¼ÆËã³öÈı¸öÊıÖĞ×î´óµÄÄÇ¸ö
 	 */
 	public double tbMax(double a,double b,double c){
 			double result =a>=b?a>=c?a:c:b>=c?b:c;
 			return result;
 	}
 	/*
-	 * ï¿½ï¿½ï¿½Ú¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½Ç¸ï¿½
+	 * ÓÃÓÚ¼ÆËã³öÈı¸öÊıÖĞ×îĞ¡µÄÄÇ¸ö
 	 */
 	public double tbMin(double a,double b,double c){
 		double result =a<=b?a<=c?a:c:b<=c?b:c;
 		return result;
 	}
 	/*
-	 * ï¿½Ï²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ò·µ»ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½à£¬ï¿½ï¿½ï¿½Ã»ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Null
-	 * zsHighPriceÎªï¿½ï¿½ï¿½Ô¸ßµï¿½ï¿½ï¿½ï¿½ï¿½ÍµÄ£ï¿½zsLowPriceÎªï¿½ï¿½ï¿½ÔµÍµï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½
+	 * ºÏ²¢Á½¸öÖĞÊà£¬Èç¹ûÓĞÖØµşÔò·µ»ØÀ©Õ¹ºóµÄÖĞÊà£¬Èç¹ûÃ»ÖØµş£¬·µ»ØNull
+	 * zsHighPriceÎª¸÷×Ô¸ßµãÖĞ×îµÍµÄ£¬zsLowPriceÎª¸÷×ÔµÍµãÖĞ×î¸ßµÄ
 	 * 
 	 */
 	public Zs comZs(Zs zs1,Zs zs2){
@@ -32,7 +32,7 @@ public class TbUtil {
 		double zsHighPrice = tbMin(zs1.zsHighPrice, zs2.zsHighPrice, 9999);
 		double[] arrHigh ={zs1.highPrice,zs1.sHighPrice,zs2.highPrice,zs2.sHighPrice};
 		double[] arrLow ={zs1.lowPrice,zs1.sLowPrice,zs2.lowPrice,zs2.sLowPrice};
-		//ï¿½ï¿½ï¿½Ú»ï¿½È¡ï¿½Î¸ßµã£¬ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Ê±ï¿½ï¿½Òªï¿½Ãµï¿½ï¿½ï¿½
+		//ÓÃÓÚ»ñÈ¡´Î¸ßµã£¬ÒòÎªºóĞøÉ¾³ıÖ÷Ç÷ÊÆµÄÊ±ºòÒªÓÃµ½¡£
 		double sHigh = getNum(arrHigh,3);
 		double sLow = getNum(arrLow,3);
 		if (zsHighPrice>=zsLowPrice){
@@ -43,14 +43,14 @@ public class TbUtil {
 		}
 		return null;
 	}
-	//ï¿½ï¿½ï¿½Ú»ï¿½È¡allNumï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½numï¿½ï¿½ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½
+	//ÓÃÓÚ»ñÈ¡allNumÖĞÅÅÃûµÚnumµÄÊı×Ö£¬Õâ¸öÅÅĞòÊÇÉıĞòµÄ¡£
 	public double getNum(double[] allNum,int num){
 		Arrays.sort(allNum);
 		return allNum[num-1];
 	}
 	/*
-	 * ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ£ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Kï¿½ß½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ£ï¿½È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°Ò»ï¿½ï¿½ßµï¿½ÍµÍµã¶¼ï¿½Úºï¿½Ò»ï¿½ï¿½ï¿½Ğ¼ä£¬ï¿½ï¿½Ç°Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İ¿ï¿½ï¿½ï¿½ï¿½Å³ï¿½
+	 * µÚÒ»´ÎÇåÀíÊı¾İ£ºÖ÷Òª¶ÔÈÕKÏß½øĞĞÇåÀí
+	 * ÇåÀíÄÚÈİ£ºÈ¥³ı°üº¬¹ØÏµµÄÈÕK£¬±ÈÈçÇ°Ò»Ìì¸ßµãºÍµÍµã¶¼ÔÚºóÒ»ÌìÖĞ¼ä£¬ÔòÇ°Ò»ÌìµÄÊı¾İ¿ÉÒÔÅÅ³ı
 	 */
 	public ArrayList firstClean(ArrayList al){
 		for(int i=1;i<al.size()-1;i++){
@@ -70,8 +70,8 @@ public class TbUtil {
 	}
 	
 /*
- * ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½Peakï¿½ï¿½ï¿½ï¿½Ï´ 
- * ï¿½ï¿½Ï´ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ßµï¿½ï¿½Ê±ï¿½ï¿½È¡ï¿½ï¿½ßµã£»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÍµï¿½ï¿½Ê±ï¿½ï¿½È¡ï¿½ï¿½Íµã¡£
+ * µÚ¶ş´ÎÇåÏ´£ºÕë¶ÔPeakµÄÇåÏ´ 
+ * ÇåÏ´·½Ê½£ºÁ¬Ğø³öÏÖ¸ßµãµÄÊ±ºò£¬È¡×î¸ßµã£»Á¬Ğø³öÏÖµÍµãµÄÊ±ºò£¬È¡×îµÍµã¡£
  */
 	public ArrayList<Peak> secondClean(ArrayList<Peak> al){
 		for(int i=1;i<al.size()-1;i++){
@@ -103,8 +103,8 @@ public class TbUtil {
 		return al;
 	}
 	
-	//ï¿½Ğ¶ï¿½comp1ï¿½ï¿½comp2ï¿½Ç·ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½highposï¿½ï¿½lowposï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßµï¿½ÍµÍµï¿½ï¿½ï¿½ï¿½Ä¸ï¿½Î»ï¿½ï¿½
-	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã»Ø²ï¿½ï¿½Üµï¿½Ê±ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
+	//ÅĞ¶Ïcomp1ºÍcomp2ÊÇ·ñÊÇ°üº¬¹ØÏµ£¬highposºÍlowpos´ú±íÁËÕâ¸öÊı×éÀïÃæ¸ßµãºÍµÍµãÔÚÄÄ¸öÎ»ÖÃ
+	//Õâ¸öº¯ÊıÊ¹ÓÃ»Ø²â¿ò¼ÜµÄÊ±ºò£¬ĞèÒªµ÷Õû
 	public Boolean isContain(String[] comp1,String[] comp2,int highPos,int lowPos){
 		Boolean result = false;
 		double comp1High = Double.parseDouble(comp1[highPos]);
@@ -117,9 +117,9 @@ public class TbUtil {
 		return result;
 	}
 	
-	//listï¿½Ğµï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½é£¬
-	//ï¿½ï¿½È¡listï¿½Ğµï¿½Peakï¿½ßµï¿½ï¿½Peakï¿½Íµã£¬highPosï¿½ï¿½lowPosï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ£ï¿½ï¿½ßµï¿½ÍµÍµï¿½ï¿½Î»ï¿½ï¿½
-	//Ê¹ï¿½Ã»Ø²ï¿½ï¿½Üµï¿½Ê±ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
+	//listÖĞµÄÀàĞÍÎªÊı×é£¬
+	//»ñÈ¡listÖĞµÄPeak¸ßµãºÍPeakµÍµã£¬highPosºÍlowPos´ú±íµÄÊÇÔÚÊı×éÖĞ£¬¸ßµãºÍµÍµãµÄÎ»ÖÃ
+	//Ê¹ÓÃ»Ø²â¿ò¼ÜµÄÊ±ºòĞèÒªµ÷Õû
 	public ArrayList<Peak> getPeak(ArrayList al,int highPos,int lowPos){
 		ArrayList<Peak> result = new ArrayList<Peak>();
 		for(int i=1;i<al.size()-1;i++){
@@ -144,9 +144,9 @@ public class TbUtil {
 		return result;
 	}
 	/*
-	 * È¡ï¿½ï¿½ï¿½ï¿½Trendï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
-	 * ï¿½Ğ¶ï¿½ï¿½Ç·ï¿½ï¿½Ğ½ï¿½ï¿½ï¿½ï¿½ï¿½min(high1,high2,high3),max(low1,low2,low3)
-	 * ï¿½Î¸ßµï¿½sHighï¿½ï¿½sLowï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¶ï¿½ï¿½Ú¸ßµï¿½ï¿½ï¿½Ëµï¿½ï¿½ÊµÖ»ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½minï¿½Í´Î¸ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½Èµï¿½
+	 * È¡Èı¸öTrendµÄÖØµş²¿·Ö
+	 * ÅĞ¶ÏÊÇ·ñÓĞ½»¼¯£ºmin(high1,high2,high3),max(low1,low2,low3)
+	 * ´Î¸ßµãsHighºÍsLow£ºÈı¸öÇ÷ÊÆ¶ÔÓÚ¸ßµãÀ´ËµÆäÊµÖ»ÓĞ2¸ö£¬minºÍ´Î¸ßÆäÊµÊÇÏàµÈµÄ
 	 */
 	public Zs hasZs(Trend td1,Trend td2,Trend td3){
 		TbUtil tu = new TbUtil();

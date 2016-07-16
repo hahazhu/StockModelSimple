@@ -52,8 +52,8 @@ public class TbBacktestingFrame {
 		this.testBatch = testBatch;
 	}
 	public static void main(String[] args){
-		Params.dateBegin = "20140101";
-		Params.dateEnd = "20150413";
+		Params.dateBegin = "20160101";
+		Params.dateEnd = "20160522";
 		List stockList = jdbc.queryForList("select distinct stock_id from stock_day where  d_date > ? ",
 				new Object[]{ Params.dateBegin },String.class);
 		String testTime = jdbc.queryForObject("select date_format(sysdate(),'%Y-%m-%d %H:%i:%S') from dual", String.class);
@@ -63,9 +63,6 @@ public class TbBacktestingFrame {
 		StockPriceWareHouse.setBackCount(tb.getBackDayCount());
 		bt.run(tb);
 		printStats(bt);
-		
-		
-		
 	}
 	private static void printStats(TbBacktestingFrame bt) {
 		logger.info("-------------统计信息--------------");
@@ -118,7 +115,7 @@ public class TbBacktestingFrame {
 	 */
 	public void run(StockModel stockModel){
 		//生成回测时间段的每一个交易日列表 
-//		List<String> dateRange = DateUtil.getRange(com.stock,dateBegin,dateEnd);
+//		List<String> dateRange = DateUtil.getRange(stock,dateBegin,dateEnd);
 		List<String> dateRange = jdbc.queryForList("select distinct d_date from stock_day where  d_date between ? and ?",
 				new Object[]{ dateBegin,dateEnd},String.class);
 		if(dateRange!=null&&dateRange.size()!=0){

@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import com.stock.job.DailyJob;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -25,13 +27,13 @@ public class StockPriceUtil {
 
 	public static void clear(){
 		JdbcTemplate jdbc = (JdbcTemplate) BeanFactory.getInstance().getBean("jdbcTemplate");
-		jdbc.update("truncate table stock_day");
-		logger.info(" table truncated!");
+		jdbc.update("truncate table stock_day_tmp");
+		logger.info(" table stock_day_tmp truncated!");
 	}
 	public static void clearThirty(){
 		JdbcTemplate jdbc = (JdbcTemplate) BeanFactory.getInstance().getBean("jdbcTemplate");
-		jdbc.update("truncate table stock_thirty");
-		logger.info(" stock_thirty table truncated!");
+		jdbc.update("truncate table stock_thirty_tmp");
+		logger.info(" stock_thirty_tmp table truncated!");
 	}
 	
 	public static void importHisFromListAfterIndex(int first,List stockList)
@@ -44,6 +46,21 @@ public class StockPriceUtil {
 			}
 		}
 		fixedThreadPool.shutdown();
+		while(!fixedThreadPool.isTerminated()){
+			fixedThreadPool.awaitTermination(60, TimeUnit.SECONDS);
+			logger.info("尚未下载完成，等待60秒");
+		}
+	}
+	public static void importDailyInfo(List stockList){
+		ExecutorService fixedThreadPool = Executors.newFixedThreadPool(POLLSIZE);
+		for (int i = 0; i < stockList.size(); i++) {
+			String code = (String) stockList.get(i);
+			if(!"".equals(code)&&code!=null){
+				fixedThreadPool.execute(new DailyJob(code));
+			}
+		}
+		fixedThreadPool.shutdown();
+
 	}
 	
 	public static void importThirtyHisFromListAfterIndex(int first,List stockList)
@@ -51,11 +68,21 @@ public class StockPriceUtil {
 		first = first < 0 ? 0 : first;
 		ExecutorService fixedThreadPool = Executors.newFixedThreadPool(POLLSIZE);
 		for (int i = first; i < stockList.size(); i++) {
-			if(!"".equals((String) stockList.get(i))&&stockList.get(i)!=null){
-				fixedThreadPool.execute(new ThirtyMinJob((String) stockList.get(i))); 
+			String code = (String) stockList.get(i);
+			if(!"".equals(code)&&code!=null){
+				fixedThreadPool.execute(new ThirtyMinJob(code));
 			}
 		}
 		fixedThreadPool.shutdown();
+		while(!fixedThreadPool.isTerminated()){
+			fixedThreadPool.awaitTermination(60, TimeUnit.SECONDS);
+			logger.info("尚未下载完成，等待60秒");
+		}
+	}
+	public static void mergeThirty(){
+		JdbcTemplate jdbc = (JdbcTemplate) BeanFactory.getInstance().getBean("jdbcTemplate");
+		int update = jdbc.update("replace into  gao_stock.stock_thirty select * from gao_stock.stock_thirty_tmp ");
+		logger.info(" merge into stock_thirty update count=" + update);
 	}
 	
 	
@@ -86,13 +113,12 @@ public class StockPriceUtil {
 		}
 		return stockInfo;
 	}
-	private static List getStockInfoByCode(String stockCode)
+	public static List getStockInfoByCode(String stockCode)
 			throws IOException {
 		// 仅仅打印
 		List stockInfo =new ArrayList();
 		stockInfo.add(stockCode.substring(2));
 		stockInfo.add(stockCode.substring(0, 2));
-//		stockInfo.add(DataUtil.GetNowDate());
 		for(int j=0;j<10;j++){
 			try{
 				URL url = new URL("http://hq.sinajs.cn/?list=" + stockCode);
@@ -120,9 +146,17 @@ public class StockPriceUtil {
 					break;
 				}
 			}catch(Exception e){
-				
+				logger.error(e.toString());
 			}
 		}
 		return stockInfo;
+	}
+
+	public static void mergeHis() {
+		JdbcTemplate jdbc = (JdbcTemplate) BeanFactory.getInstance().getBean("jdbcTemplate");
+		jdbc.update("truncate table stock_day ");
+		int update = jdbc.update("insert into  stock_day select * from stock_day_tmp ");
+		logger.info(" merge into stock_day update count=" + update);
+
 	}
 }

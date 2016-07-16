@@ -26,7 +26,7 @@ public class StockCodeUtil {
         URL url = null ;  
 		for(int i=1; i <= PAGE_NUM ; i ++ ){  
 			logger.info("before "+i);
-             url = new URL("http://vip.com.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/qgqp/index.phtml?s_i=&s_a=&s_c=&s_t=&s_z=&p="+i) ;
+             url = new URL("http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/qgqp/index.phtml?s_i=&s_a=&s_c=&s_t=&s_z=&p="+i) ;   
 			logger.info("after "+i);
              String code = getBatchStackCodes(url) ;  
              if(code.contains("sh")||code.contains("sz")){
@@ -38,7 +38,7 @@ public class StockCodeUtil {
         }  
         
     	for(int i=1; i <= SZ_PAGE_NUM ; i ++ ){  
-    		url = new URL("http://vip.com.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/qgqp/index.phtml?s_i=&s_a=&s_c=&s_t=sz_a&s_z=&p="+i) ;
+    		url = new URL("http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/qgqp/index.phtml?s_i=&s_a=&s_c=&s_t=sz_a&s_z=&p="+i) ;   
     		URLConnection connection = url.openConnection() ;  
     		BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream())) ;  
     		String line = null ;  
@@ -63,12 +63,14 @@ public class StockCodeUtil {
         URL url = null ;  
 		for(int i=1; i <= 5 ; i ++ ){  
 	        StringBuffer sb = new StringBuffer() ;  
-//             url = new URL("http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/index.aspx?type=s&sortType=C&sortRule=-1&pageSize=1000&page="+i+"&jsName=quote_123&style=33&token=44c9d251add88e27b65ed86506f6e5da&_g=0.37288209485961965") ;   
-             url = new URL("http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/index.aspx?type=s&sortType=A&sortRule=1&pageSize=1000&page="+i+"&jsName=quote_123&style=33&token=44c9d251add88e27b65ed86506f6e5da&_g=0.15164401757241852") ;   
-             URLConnection connection = url.openConnection() ; 
-             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream())) ;  
-     		 String line = null ;  
-     		 while((line = br.readLine()) != null ){  
+//             url = new URL("http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/index.aspx?type=s&sortType=C&sortRule=-1&pageSize=1000&page="+i+"&jsName=quote_123&style=33&token=44c9d251add88e27b65ed86506f6e5da&_g=0.37288209485961965") ;
+			logger.info("connecting to eastmoney");
+            url = new URL("http://hqdigi2.eastmoney.com/EM_Quote2010NumericApplication/index.aspx?type=s&sortType=A&sortRule=1&pageSize=1000&page="+i+"&jsName=quote_123&style=33&token=44c9d251add88e27b65ed86506f6e5da&_g=0.15164401757241852") ;
+            URLConnection connection = url.openConnection() ;
+			connection.setConnectTimeout(10000);
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream())) ;
+     		String line = null ;
+			while((line = br.readLine()) != null ){
      			 sb.append(line) ;  
      		 }  
      		 String codestr = sb.toString();

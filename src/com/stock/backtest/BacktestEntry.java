@@ -3,6 +3,7 @@
  */
 package com.stock.backtest;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,14 +11,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.stock.model.*;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import util.BeanFactory;
 
 import com.stock.data.stockprice.StockPriceWareHouse;
-import com.stock.model.StockModel;
-import com.stock.model.TrendBuyV4Model;
 import com.stock.util.DateUtil;
 import com.stock.util.Params;
 
@@ -40,18 +40,21 @@ public class BacktestEntry {
 		
 		for(int year =2016;year<2017;year++){
 			ExecutorService fixedThreadPool = Executors.newFixedThreadPool(10);
-			Params.dateBegin = year+"0101";
+			Params.dateBegin = year+"0709";
 			int yearEnd = year+1;
 			Params.dateEnd = yearEnd+"0101";
 
-			StockModel tb = new TrendBuyV4Model();
+//			StockModel tb = new TBModel();
+			StockModel tb = new TrendBuyModel();
 
 			DateUtil.initDateMap(tb.getBackDayCount());
+//			DateUtil.init30timeMap(tb.getBackDayCount());
 			StockPriceWareHouse.setBackCount(tb.getBackDayCount());
 			StockPriceWareHouse.initPriceMap();
-			for(int j=10;j<11;j++){
-//				tb = new TrendBuyV4Model();
-				Params.holdPeriod = j;
+//			StockPriceWareHouse.initThirtyPriceMap();
+			for(int j=8;j<10;j++){
+				tb = new TrendBuyModel();
+				tb.setHoldPeriod(j);
 				List stockList = jdbc.queryForList("select distinct stock_id from stock_day where  d_date > ? ",
 						new Object[]{ Params.dateBegin },String.class);
 				String testTime = jdbc.queryForObject("select date_format(sysdate(),'%Y-%m-%d %H:%i:%S') from dual", String.class);
@@ -61,7 +64,7 @@ public class BacktestEntry {
 			}
 			fixedThreadPool.shutdown();
 			fixedThreadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-			StockPriceWareHouse.clearMemory();
+			StockPriceWareHouse.clearDayMemory();
 			DateUtil.clear();
 		}
 		for(Iterator it =backTestParam.iterator();it.hasNext();){

@@ -30,5 +30,11 @@ public interface StockModel {
 	boolean hasBuy();
 	
 	int getBackDayCount();
+	float getBuyPrice();
+	float getSellPrice();
+	String getBuyDate();
+	String getSellDate();
+	int getHoldPeriod();
+	void setHoldPeriod(int holdPeriod);
 
 }

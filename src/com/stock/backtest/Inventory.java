@@ -12,6 +12,7 @@ import java.util.Map;
 import com.stock.data.stockprice.StockPriceWareHouse;
 import com.stock.model.Stock;
 import com.stock.util.DateUtil;
+import com.stock.util.Params;
 
 /**
  * @author hahazhu
