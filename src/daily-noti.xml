@@ -29,7 +29,7 @@
 		<property name="targetMethod" value="execute" />
 		<property name="concurrent" value="false" />
 	</bean>
-	<bean id="dailyNotiJob" class="com.com.stock.job.DailyNotiJob" />
+	<bean id="dailyNotiJob" class="com.stock.job.DailyNotiJob" />
 
 	
 
