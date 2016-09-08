@@ -55,7 +55,7 @@ public class XueqiuStockPriceJob implements Runnable {
 		try {
 			url = new URL(
 					"http://www.xueqiu.com/stock/forchartk/stocklist.json?period=1day&symbol="
-							+ stockCode + "&type=before&_=1460389761298");
+							+ stockCode + "&type=before&_=1473253939138");
 
 			int n = 0;
 			StringBuffer sb = new StringBuffer();
@@ -65,36 +65,86 @@ public class XueqiuStockPriceJob implements Runnable {
 							.openConnection();
 					connection.setConnectTimeout(3000);
 					connection.setReadTimeout(10000);
-					connection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+					connection.setRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01");
 					connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36");
-					connection.setRequestProperty("Accept-Encoding", "gzip, deflate, sdch");
-					connection.setRequestProperty("Accept-Language", "zh-CN,zh;q=0.8");
+					connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
+					connection.setRequestProperty("Accept-Language", "zh-CN");
 					connection.setRequestProperty("Host", "xueqiu.com");
-					connection.setRequestProperty("Proxy-Connection", "keep-alive");
-					connection.setRequestProperty("Upgrade-Insecure-Requests", "1");
-					connection
-							.setRequestProperty(
+					connection.setRequestProperty("DNT", "1");
+					connection.setRequestProperty("Referer", "https://xueqiu.com/S/"+stockCode);
+					connection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+					connection .setRequestProperty(
 									"Cookie",
-									"s=1e8c1213rb; bid=e3e1aafc190e65e60dca5d70b5076471_io9xpiby; snbim_minify=true; webp=0; xq_a_token=d0ffb1c343ed5691d9fa200a2a26cd4423be68c1; xqat=d0ffb1c343ed5691d9fa200a2a26cd4423be68c1; xq_r_token=a3a5e1a29bab2ecd1d695d6bb58e34597dd15c99; xq_is_login=1; u=9803841032; xq_token_expire=Mon%20Jul%2011%202016%2022%3A37%3A48%20GMT%2B0800%20(CST); __utmt=1; __utma=1.741705998.1463398616.1465111023.1466087899.15; __utmb=1.1.10.1466087899; __utmc=1; __utmz=1.1463398616.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); Hm_lvt_1db88642e346389874251b5a1eded6e3=1466087872; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1466087899");
+									"s=1e8c1213rb; bid=e3e1aafc190e65e60dca5d70b5076471_io9xpiby; webp=0; xq_a_token=1e1588c0fa7a32b3bcb679c08f42374b8cc989eb; xq_r_token=87bb956cbd7ec0ce3b541fe50224fab435c95d35; u=9803841032; xq_token_expire=Sun%20Oct%2002%202016%2021%3A10%3A23%20GMT%2B0800%20(CST); xq_is_login=1; __utmt=1; __utma=1.741705998.1463398616.1471791725.1473253840.24; __utmb=1.3.10.1473253840; __utmc=1; __utmz=1.1463398616.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); Hm_lvt_1db88642e346389874251b5a1eded6e3=1470837457,1471784193,1473253822; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1473253929");
 					connection.connect();
-					
+
+					int status = connection.getResponseCode();
+					boolean redirect=false;
+					if (status != HttpURLConnection.HTTP_OK) {
+						if (status == HttpURLConnection.HTTP_MOVED_TEMP
+								|| status == HttpURLConnection.HTTP_MOVED_PERM
+								|| status == HttpURLConnection.HTTP_SEE_OTHER)
+							redirect = true;
+					}
+
+//					System.out.println("Response Code ... " + status);
+
+					if (redirect) {
+
+						// get redirect url from "location" header field
+						String newUrl = connection.getHeaderField("Location");
+
+						// get the cookie if need, for login
+						String cookies = connection.getHeaderField("Set-Cookie");
+
+						// open the new connnection again
+						connection = (HttpURLConnection) new URL(newUrl).openConnection();
+						connection.setRequestProperty("Cookie", cookies);
+						connection.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
+						connection.addRequestProperty("User-Agent", "Mozilla");
+						connection.addRequestProperty("Referer", "google.com");
+
+//						System.out.println("Redirect to URL : " + newUrl);
+
+						connection.setConnectTimeout(3000);
+						connection.setReadTimeout(10000);
+						connection.setRequestProperty("Accept", "application/json, text/javascript, */*; q=0.01");
+						connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36");
+						connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
+						connection.setRequestProperty("Accept-Language", "zh-CN");
+						connection.setRequestProperty("Host", "xueqiu.com");
+						connection.setRequestProperty("DNT", "1");
+						connection.setRequestProperty("Referer", "https://xueqiu.com/S/"+stockCode);
+						connection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+						connection .setRequestProperty(
+								"Cookie",
+								"s=1e8c1213rb; bid=e3e1aafc190e65e60dca5d70b5076471_io9xpiby; webp=0; xq_a_token=1e1588c0fa7a32b3bcb679c08f42374b8cc989eb; xq_r_token=87bb956cbd7ec0ce3b541fe50224fab435c95d35; u=9803841032; xq_token_expire=Sun%20Oct%2002%202016%2021%3A10%3A23%20GMT%2B0800%20(CST); xq_is_login=1; __utmt=1; __utma=1.741705998.1463398616.1471791725.1473253840.24; __utmb=1.3.10.1473253840; __utmc=1; __utmz=1.1463398616.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); Hm_lvt_1db88642e346389874251b5a1eded6e3=1470837457,1471784193,1473253822; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1473253929");
+						connection.connect();
+					}
+
 					InputStream in = connection.getInputStream();
-		            in = new GZIPInputStream(in);
-		            BufferedReader bd = new BufferedReader(new InputStreamReader(in));
-		            String text;
-		            while ((text = bd.readLine()) != null) sb.append(text);
-		            connection.disconnect();
-					
-//					BufferedReader br = new BufferedReader(
-//							new InputStreamReader(connection.getInputStream()));
-//					String line = null;
-//					while ((line = br.readLine()) != null) {
-//						sb.append(line);
-//					}
-//					connection.disconnect();
+					boolean gz=true;
+					if(gz){
+						in = new GZIPInputStream(in);
+						BufferedReader bd = new BufferedReader(new InputStreamReader(in));
+						String text;
+						while ((text = bd.readLine()) != null) sb.append(text);
+						connection.disconnect();
+					}else{
+                        BufferedReader br = new BufferedReader(
+                                new InputStreamReader(connection.getInputStream()));
+                        String line = null;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line);
+                        }
+						System.out.println(sb);
+						connection.disconnect();
+
+					}
+
 					n = 1;
 				} catch (Exception e) {
-					logger.error(stockCode+" connect lose.....sleeping 10s");
+					logger.error(stockCode+" connect lose.....sleeping 10s"+e);
 					try {
 						Thread.sleep(10000);
 					} catch (InterruptedException e1) {
