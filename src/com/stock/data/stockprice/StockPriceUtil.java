@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.stock.job.DailyJob;
+import com.stock.job.XueqiuStockIndexJob;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -35,7 +36,28 @@ public class StockPriceUtil {
 		jdbc.update("truncate table stock_thirty_tmp");
 		logger.info(" stock_thirty_tmp table truncated!");
 	}
-	
+	public static void clearIndex(){
+		JdbcTemplate jdbc = (JdbcTemplate) BeanFactory.getInstance().getBean("jdbcTemplate");
+		jdbc.update("truncate table stock_index_tmp");
+		logger.info(" stock_index_tmp table truncated!");
+	}
+
+	public static void importIndex(List stockList) throws InterruptedException {
+		ExecutorService fixedThreadPool = Executors.newFixedThreadPool(POLLSIZE);
+		for (int i = 0; i < stockList.size(); i++) {
+			if(!"".equals((String) stockList.get(i))&&stockList.get(i)!=null){
+				JdbcTemplate jdbc = (JdbcTemplate) BeanFactory.getInstance().getBean("jdbcTemplate");
+				fixedThreadPool.execute(new XueqiuStockIndexJob((String) stockList.get(i)));
+			}
+		}
+		fixedThreadPool.shutdown();
+		while(!fixedThreadPool.isTerminated()){
+			logger.info("尚未下载完成，等待30秒");
+			fixedThreadPool.awaitTermination(30, TimeUnit.SECONDS);
+		}
+		logger.info("下载完成");
+
+	}
 	public static void importHisFromListAfterIndex(int first,List stockList)
 			throws Exception {
 		first = first < 0 ? 0 : first;
@@ -47,9 +69,10 @@ public class StockPriceUtil {
 		}
 		fixedThreadPool.shutdown();
 		while(!fixedThreadPool.isTerminated()){
-			fixedThreadPool.awaitTermination(60, TimeUnit.SECONDS);
-			logger.info("尚未下载完成，等待60秒");
+			logger.info("尚未下载完成，等待30秒");
+			fixedThreadPool.awaitTermination(30, TimeUnit.SECONDS);
 		}
+		logger.info("下载完成");
 	}
 	public static void importDailyInfo(List stockList){
 		ExecutorService fixedThreadPool = Executors.newFixedThreadPool(POLLSIZE);
@@ -154,9 +177,22 @@ public class StockPriceUtil {
 
 	public static void mergeHis() {
 		JdbcTemplate jdbc = (JdbcTemplate) BeanFactory.getInstance().getBean("jdbcTemplate");
+		logger.info(" truncate table stock_day begin" );
 		jdbc.update("truncate table stock_day ");
+		logger.info(" truncate table stock_day end");
+		logger.info(" merge into stock_day update begin");
 		int update = jdbc.update("insert into  stock_day select * from stock_day_tmp ");
 		logger.info(" merge into stock_day update count=" + update);
+
+	}
+	public static void mergeIndex() {
+		JdbcTemplate jdbc = (JdbcTemplate) BeanFactory.getInstance().getBean("jdbcTemplate");
+		logger.info(" truncate table stock_index begin" );
+		jdbc.update("truncate table stock_index ");
+		logger.info(" truncate table stock_index end" );
+		logger.info(" merge into stock_index update begin" );
+		int update = jdbc.update("insert into  stock_index select * from stock_index_tmp ");
+		logger.info(" merge into stock_index update count=" + update);
 
 	}
 }

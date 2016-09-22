@@ -3,6 +3,14 @@
  */
 package com.stock.job;
 
+import com.stock.util.DataUtil;
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.jdbc.core.JdbcTemplate;
+import util.BeanFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,16 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import util.BeanFactory;
-
-import com.stock.util.DataUtil;
-
 /**
  * @author hahazhu
  * 
@@ -32,7 +30,7 @@ public class XueqiuStockIndexJob implements Runnable {
 	Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private String stockCode;
-	private static String sql = "insert into stock_day_tmp(stock_id,market,volume,open,high,close,low,chg,percent,turnrate,ma5,ma10,ma20,ma30,ema12,ema26,dif,dea,macd,d_date) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static String sql = "insert into stock_index_tmp(stock_id,market,volume,open,high,close,low,chg,percent,turnrate,ma5,ma10,ma20,ma30,ema12,ema26,dif,dea,macd,d_date) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public XueqiuStockIndexJob(String stockCode) {
 		this.stockCode = stockCode;
